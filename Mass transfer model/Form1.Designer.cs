@@ -243,6 +243,7 @@
             this.textBoxQv.TabIndex = 26;
             this.textBoxQv.Text = "0";
             this.textBoxQv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxQv.Visible = false;
             // 
             // label4
             // 
@@ -253,6 +254,7 @@
             this.label4.TabIndex = 27;
             this.label4.Text = "Внутренний источник Qv";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label4.Visible = false;
             // 
             // Form1
             // 
