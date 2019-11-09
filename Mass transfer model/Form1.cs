@@ -27,12 +27,12 @@ namespace Mass_transfer_model
             ObjWorkBook = ObjExcel.Workbooks.Add(System.Reflection.Missing.Value);
             //Таблица.
             ObjWorkSheet = (Worksheet)ObjWorkBook.Sheets[1];
-            ObjWorkSheet = ObjWorkBook.ActiveSheet as Microsoft.Office.Interop.Excel.Worksheet;
+            //ObjWorkSheet = ObjWorkBook.ActiveSheet as Microsoft.Office.Interop.Excel.Worksheet;
 
             int Kol;
             double Tau;
             double qv;
-            double Templ;
+            double Pnach;
 
             try
             {
@@ -48,27 +48,30 @@ namespace Mass_transfer_model
             {
                 Kol = Convert.ToInt32(TextBoxKol.Text);//кол-во узлов
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show("неверный формат ввода");
+                MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
             try
             {
-                Templ = Convert.ToDouble(TextBoxTempl.Text);//начальная температура
+                Pnach = Convert.ToDouble(TextBoxPnach.Text);//начальная температура
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show("неверный формат ввода");
+                MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
             try
             {
                 qv = Convert.ToDouble(textBoxQv.Text);//Внутренний источник
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show("неверный формат ввода");
+                MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
             double k = 1, alpha = 1, beta = 1, mju = 1, m = 1;
@@ -83,7 +86,7 @@ namespace Mass_transfer_model
             Kol = Kol - 1;
             for ( n = 0; n <= Kol; n++)
             {
-                P[0, n] = Templ;
+                P[0, n] = Pnach;
                 ObjWorkSheet.Cells[3, n + 3] = P[0, n];//выводим начальную температуру во всех узлах
             }
             ObjWorkSheet.Cells[3, 1] = "Time" + (0);//оформляем вывод
@@ -94,21 +97,21 @@ namespace Mass_transfer_model
             tau = tau + dt;
             while (tau <= Tau)
             {
-                for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
-                {
-                    a[n] = (dt * lam) / (C * ro * h * h);
-                    c[n] = (dt * lam) / (C * ro * h * h);
-                    b[n] = -1 - 2 * (dt * lam) / (C * ro * h * h);
-                    d[n] = P[j - 1, n] + dt / (C * ro) * qv;
-                }
-
                 //for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                 //{
-                //    a[n] = (k * alpha) / (mju * h * h);
-                //    b[n] = (k * alpha) / (mju * h * h) - (k * beta) / (mju * h * h) - m / dt;
-                //    c[n] = (k * beta) / (mju * h * h);
-                //    d[n] = (m / dt) * P[j - 1, n];
+                //    a[n] = (dt * lam) / (C * ro * h * h);
+                //    c[n] = (dt * lam) / (C * ro * h * h);
+                //    b[n] = -1 - 2 * (dt * lam) / (C * ro * h * h);
+                //    d[n] = P[j - 1, n] + dt / (C * ro) * qv;
                 //}
+
+                for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                {
+                    a[n] = (k * alpha) / (mju * h * h);
+                    b[n] = (k * alpha) / (mju * h * h) - (k * beta) / (mju * h * h) - m / dt;
+                    c[n] = (k * beta) / (mju * h * h);
+                    d[n] = (m / dt) * P[j - 1, n];
+                }
 
                 //граничые условия
 

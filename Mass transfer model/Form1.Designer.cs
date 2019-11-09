@@ -31,7 +31,7 @@
             this.Output = new System.Windows.Forms.Button();
             this.TextBoxTau = new System.Windows.Forms.TextBox();
             this.TextBoxKol = new System.Windows.Forms.TextBox();
-            this.TextBoxTempl = new System.Windows.Forms.TextBox();
+            this.TextBoxPnach = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -88,12 +88,12 @@
             // 
             // TextBoxTempl
             // 
-            this.TextBoxTempl.Location = new System.Drawing.Point(102, 241);
-            this.TextBoxTempl.Name = "TextBoxTempl";
-            this.TextBoxTempl.Size = new System.Drawing.Size(145, 20);
-            this.TextBoxTempl.TabIndex = 3;
-            this.TextBoxTempl.Text = "0";
-            this.TextBoxTempl.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBoxPnach.Location = new System.Drawing.Point(102, 241);
+            this.TextBoxPnach.Name = "TextBoxTempl";
+            this.TextBoxPnach.Size = new System.Drawing.Size(145, 20);
+            this.TextBoxPnach.TabIndex = 3;
+            this.TextBoxPnach.Text = "0";
+            this.TextBoxPnach.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label1
             // 
@@ -278,7 +278,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.TextBoxTempl);
+            this.Controls.Add(this.TextBoxPnach);
             this.Controls.Add(this.TextBoxKol);
             this.Controls.Add(this.TextBoxTau);
             this.Controls.Add(this.Output);
@@ -299,7 +299,7 @@
         private System.Windows.Forms.Button Output;
         private System.Windows.Forms.TextBox TextBoxTau;
         private System.Windows.Forms.TextBox TextBoxKol;
-        private System.Windows.Forms.TextBox TextBoxTempl;
+        private System.Windows.Forms.TextBox TextBoxPnach;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
