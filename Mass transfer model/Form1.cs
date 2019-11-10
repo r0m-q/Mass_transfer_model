@@ -107,10 +107,10 @@ namespace Mass_transfer_model
 
                 for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                 {
-                    a[n] = (k * alpha) / (mju * h * h);
-                    b[n] = (k * alpha) / (mju * h * h) - (k * beta) / (mju * h * h) - m / dt;
-                    c[n] = (k * beta) / (mju * h * h);
-                    d[n] = (m / dt) * P[j - 1, n];
+                    a[n] = -(k * alpha) / (mju * h * h);
+                    b[n] = (k * alpha) / (mju * h * h) + (k * beta) / (mju * h * h) + m / dt;
+                    c[n] = -(k * beta) / (mju * h * h);
+                    d[n] = -(m / dt) * P[j - 1, n];
                 }
 
                 //граничые условия
