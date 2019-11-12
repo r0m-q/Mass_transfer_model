@@ -86,10 +86,10 @@
             this.TextBoxKol.Text = "6";
             this.TextBoxKol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // TextBoxTempl
+            // TextBoxPnach
             // 
             this.TextBoxPnach.Location = new System.Drawing.Point(102, 241);
-            this.TextBoxPnach.Name = "TextBoxTempl";
+            this.TextBoxPnach.Name = "TextBoxPnach";
             this.TextBoxPnach.Size = new System.Drawing.Size(145, 20);
             this.TextBoxPnach.TabIndex = 3;
             this.TextBoxPnach.Text = "0";
@@ -191,12 +191,10 @@
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
             this.radioButton1.Location = new System.Drawing.Point(371, 92);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(14, 13);
             this.radioButton1.TabIndex = 21;
-            this.radioButton1.TabStop = true;
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
             // radioButton2
@@ -220,10 +218,12 @@
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
             this.radioButton4.Location = new System.Drawing.Point(371, 255);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(14, 13);
             this.radioButton4.TabIndex = 24;
+            this.radioButton4.TabStop = true;
             this.radioButton4.UseVisualStyleBackColor = true;
             // 
             // radioButton5
@@ -243,7 +243,6 @@
             this.textBoxQv.TabIndex = 26;
             this.textBoxQv.Text = "0";
             this.textBoxQv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBoxQv.Visible = false;
             // 
             // label4
             // 
@@ -254,7 +253,6 @@
             this.label4.TabIndex = 27;
             this.label4.Text = "Внутренний источник Qv";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label4.Visible = false;
             // 
             // Form1
             // 
@@ -284,6 +282,7 @@
             this.Controls.Add(this.Output);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();

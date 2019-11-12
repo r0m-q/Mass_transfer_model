@@ -18,7 +18,7 @@ namespace Mass_transfer_model
         public double[] f = new double[1000];
         public double[] g = new double[1000];
 
-        private void Output_Click(object sender, EventArgs e)
+        public void Output_Click(object sender, EventArgs e)
         {
             Microsoft.Office.Interop.Excel.Application ObjExcel = new Microsoft.Office.Interop.Excel.Application();
             Workbook ObjWorkBook;
@@ -74,139 +74,220 @@ namespace Mass_transfer_model
                 MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
-            double k = 1, alpha = 1, beta = 1, mju = 1, m = 1;
+
+            int y = 0;
+            double k = 1, mju = 1, m = 1;
             double dt = 0.04;//шаг по времени
-            double lam = 1;
-            double C = 1;
-            double ro = 1;
-            double tau = 0;
+            int j = 1;
+            double Diff = 1;
+            double t = 0;
             double l = 1.0;//принимаем длинну за 1
             double h = l / (Kol-1);//считаем шаг сетки
             int n;
             Kol = Kol - 1;
-            for ( n = 0; n <= Kol; n++)
+
+            //граничые условия
+
+            if (radioButton1.Checked)
             {
-                P[0, n] = Pnach;
-                ObjWorkSheet.Cells[3, n + 3] = P[0, n];//выводим начальную температуру во всех узлах
+                //первого рода слева=0 справа=0
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = 0;
+                b[Kol] = 1;
+                c[Kol] = 0;
+                d[Kol] = 0;
             }
-            ObjWorkSheet.Cells[3, 1] = "Time" + (0);//оформляем вывод
-            ObjWorkSheet.Cells[3, 2] = tau;
-            int j = 1;
-            double x = 0;
-            int i = 0;
-            tau = tau + dt;
-            while (tau <= Tau)
+            else if (radioButton2.Checked)
             {
-                //for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
-                //{
-                //    a[n] = (dt * lam) / (C * ro * h * h);
-                //    c[n] = (dt * lam) / (C * ro * h * h);
-                //    b[n] = -1 - 2 * (dt * lam) / (C * ro * h * h);
-                //    d[n] = P[j - 1, n] + dt / (C * ro) * qv;
-                //}
+                //первого рода слева=0 справа=1
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = 0;
+                b[Kol] = 1;
+                c[Kol] = 0;
+                d[Kol] = -1;
+            }
+            else if (radioButton3.Checked)
+            {
+                //первого рода слева=0 второго рода справа=0
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = 0;
+                b[Kol] = 1 / h;
+                c[Kol] = -1 / h;
+                d[Kol] = 0;
+            }
+            else if (radioButton4.Checked)
+            {
+                //первого рода слева=0 второго рода справа=1 
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = 0;
+                b[Kol] = 1 / h;
+                c[Kol] = -1 / h;
+                d[Kol] = -1;
+            }
+            else
+            {
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = -1;
+                b[Kol] = 1 / h;
+                c[Kol] = -1 / h;
+                d[Kol] = -1;
+            }
 
-                for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
-                {
-                    a[n] = -(k * alpha) / (mju * h * h);
-                    b[n] = (k * alpha) / (mju * h * h) + (k * beta) / (mju * h * h) + m / dt;
-                    c[n] = -(k * beta) / (mju * h * h);
-                    d[n] = -(m / dt) * P[j - 1, n];
-                }
+            PressureCalculation();
 
-                //граничые условия
+            СoncentrationCalculation();
 
-                if (radioButton1.Checked)
+            void PressureCalculation()
+            {
+                double x = 0;
+                j = 1;
+                ObjWorkSheet.Cells[j, 1] = "P";
+                for (n = 0; n <= Kol; n++)
                 {
-                    //первого рода слева=0 справа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = 0;
+                    x = n * h;
+                    ObjWorkSheet.Cells[2, n + 3] = "X" + (n + 1) + "   =   " + x;
+                    P[0, n] = Pnach;
+                    ObjWorkSheet.Cells[3, n + 3] = P[0, n];//выводим начальную температуру во всех узлах
                 }
-                else if (radioButton2.Checked)
+                ObjWorkSheet.Cells[3, 1] = "Time" + (0);//оформляем вывод
+                ObjWorkSheet.Cells[3, 2] = t;
+                int i = 0;
+                t = t + dt;
+                                
+                f[0] = -a[0] / b[0];
+                g[0] = -d[0] / b[0];
+                double alpha = 1, beta = 1; 
+                //double[,] alpha = new double[1000,10000];
+                //double[,] beta = new double[1000, 10000];
+                while (t <= Tau)
                 {
-                    //первого рода слева=0 справа=1
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = -1;
+                    ObjWorkSheet.Cells[j + 3, 1] = "Time" + j;
+                    ObjWorkSheet.Cells[j + 3, 2] = t;
+                    //for (y = 1; y <= Kol+1; y++)
+                    //{
+                    //    alpha[j,y-1] = 0.5 * (P[j, y] + P[j, y]);
+                    //    beta[j,y-1] = 0.5 * (P[j, y-1] + P[j, y]);
+                    //}
+
+                    //for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    //{
+                    //    a[n] = -(k * alpha[j,i]) / (mju * h * h);
+                    //    b[n] = (k * alpha[j,i]) / (mju * h * h) + (k * beta[j, i]) / (mju * h * h) + m / dt;
+                    //    c[n] = -(k * beta[j, i]) / (mju * h * h);
+                    //    d[n] = -(m / dt) * P[j - 1, n];
+                    //}
+
+                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    {
+                        a[n] = -(k * alpha) / (mju * h * h);
+                        b[n] = (k * alpha) / (mju * h * h) + (k * beta) / (mju * h * h) + m / dt;
+                        c[n] = -(k * beta) / (mju * h * h);
+                        d[n] = -(m / dt) * P[j - 1, n];
+                    }
+
+                    for (n = 1; n <= Kol; n++)
+                    {
+                        f[n] = -a[n] / (b[n] + c[n] * f[n - 1]);
+                        g[n] = -(d[n] + c[n] * g[n - 1]) / (b[n] + c[n] * f[n - 1]);
+                    }
+                    P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
+
+                    for (n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
+                    {
+                        P[j, n] = P[j, n + 1] * f[n] + g[n];
+                    }
+
+                    for (n = 0; n <= Kol; n++)
+                    {
+                        x = i * h;
+                        ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
+                        i++;
+
+                        //if (x > 1) { break; }
+                    }
+
+                    i = 0;
+                    t = t + dt;
+                    j++;
+                    //Вызываем эксель.
+                    ObjExcel.Visible = true;
+                    ObjExcel.UserControl = true;
                 }
-                //if (radioButton.Checked)
-                //{
-                //    //первого рода слева=1 справа=1
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = -1;
-                //    b[Kol] = 1;
-                //    c[Kol] = 0;
-                //    d[Kol] = -1;
-                //}
-                else if (radioButton3.Checked)
+                y = j;
+            }
+
+            void СoncentrationCalculation()
+            {
+                t = 0;
+                j = 1;
+                double x = 0;
+                y = y + 4;
+                ObjWorkSheet.Cells[y, 1] = "C";
+                for (n = 0; n <= Kol; n++)
                 {
-                    //первого рода слева=0 второго рода справа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = 0;
+                    x = n * h;
+                    ObjWorkSheet.Cells[y + 1, n + 3] = "X" + (n + 1) + "  =  " + x;
+                    P[y, n] = Pnach;
+                    ObjWorkSheet.Cells[y + 2, n + 3] = P[y , n];//выводим начальную температуру во всех узлах
                 }
-                else if (radioButton4.Checked)
-                {
-                    //первого рода слева=0 второго рода справа=1 
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
-                }
-                else
-                {
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = -1;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
-                }
+                ObjWorkSheet.Cells[y + 2, 1] = "Time" + (0);//оформляем вывод
+                ObjWorkSheet.Cells[y + 2, 2] = t;
+                int i = 0;
+                t = t + dt;
 
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
 
-                for ( n = 1; n <= Kol; n++)
+                while (t <= Tau)
                 {
-                    f[n] = -a[n] / (b[n] + c[n] * f[n - 1]);
-                    g[n] = -(d[n] + c[n] * g[n - 1]) / (b[n] + c[n] * f[n - 1]);
-                }
-                P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
-                for ( n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
-                {
-                    P[j, n] = P[j, n + 1] * f[n] + g[n];
-                }
-                for ( n = 0; n <= Kol; n++)
-                {
-                    x = i * h;
-                    ObjWorkSheet.Cells[1, i + 3] = "X" + (i + 1);
-                    ObjWorkSheet.Cells[2, i + 3] = x;
-                    ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
-                    i++;
+                    ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
+                    ObjWorkSheet.Cells[y + 3, 2] = t;
+                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    {
+                        a[n] = -Diff / (h * h);
+                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) + 1 / dt;
+                        c[n] = (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) - Diff / (h * h);
+                        d[n] = -(1 / dt) - qv;
+                    }
 
-                    //if (x > 1) { break; }
+                    for (n = 1; n <= Kol; n++)
+                    {
+                        f[n] = -a[n] / (b[n] + c[n] * f[n - 1]);
+                        g[n] = -(d[n] + c[n] * g[n - 1]) / (b[n] + c[n] * f[n - 1]);
+                    }
+                    P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
+
+                    for (n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
+                    {
+                        P[j, n] = P[j, n + 1] * f[n] + g[n];
+                    }
+
+                    for (n = 0; n <= Kol; n++)
+                    {
+                        x = i * h;
+                        ObjWorkSheet.Cells[y + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
+                        i++;
+                    }
+
+                    i = 0;
+                    t = t + dt;
+                    y++;
+                    j++;
+                    //Вызываем эксель.
+                    ObjExcel.Visible = true;
+                    ObjExcel.UserControl = true;
                 }
-                i = 0;
-                ObjWorkSheet.Cells[j + 3, 1] = "Time" + j;
-                ObjWorkSheet.Cells[j + 3, 2] = tau;
-                tau = tau + dt;
-                j++;
-                //Вызываем эксель.
-                ObjExcel.Visible = true;
-                ObjExcel.UserControl = true;
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
     
