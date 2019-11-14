@@ -11,6 +11,7 @@ namespace Mass_transfer_model
             InitializeComponent();
         }
         public double[,] P = new double[1000, 1000];
+        public double[,] Conc = new double[1000, 1000];
         public double[] a = new double[1000];
         public double[] b = new double[1000];
         public double[] c = new double[1000];
@@ -80,6 +81,7 @@ namespace Mass_transfer_model
             double dt = 0.04;//шаг по времени
             int j = 1;
             double Diff = 1;
+            double ConcNach = 0;
             double t = 0;
             double l = 1.0;//принимаем длинну за 1
             double h = l / (Kol-1);//считаем шаг сетки
@@ -232,8 +234,8 @@ namespace Mass_transfer_model
                 {
                     x = n * h;
                     ObjWorkSheet.Cells[y + 1, n + 3] = "X" + (n + 1) + "  =  " + x;
-                    P[y, n] = Pnach;
-                    ObjWorkSheet.Cells[y + 2, n + 3] = P[y , n];//выводим начальную температуру во всех узлах
+                    Conc[y, n] = ConcNach;
+                    ObjWorkSheet.Cells[y + 2, n + 3] = Conc[y , n];//выводим начальную температуру во всех узлах
                 }
                 ObjWorkSheet.Cells[y + 2, 1] = "Time" + (0);//оформляем вывод
                 ObjWorkSheet.Cells[y + 2, 2] = t;
@@ -242,87 +244,88 @@ namespace Mass_transfer_model
 
                 //граничые условия
 
-                //if (radioButton1.Checked)
-                //{
-                //    //первого рода слева=0 справа=0
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = 0;
-                //    b[Kol] = 1;
-                //    c[Kol] = 0;
-                //    d[Kol] = 0;
-                //}
-                //else if (radioButton2.Checked)
-                //{
-                //    //первого рода слева=0 справа=1
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = 0;
-                //    b[Kol] = 1;
-                //    c[Kol] = 0;
-                //    d[Kol] = -1;
-                //}
-                //else if (radioButton3.Checked)
-                //{
-                //    //первого рода слева=0 второго рода справа=0
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = 0;
-                //    b[Kol] = 1 / h;
-                //    c[Kol] = -1 / h;
-                //    d[Kol] = 0;
-                //}
-                //else if (radioButton4.Checked)
-                //{
-                //    //первого рода слева=0 второго рода справа=1 
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = 0;
-                //    b[Kol] = 1 / h;
-                //    c[Kol] = -1 / h;
-                //    d[Kol] = -1;
-                //}
-                //else if (radioButton5.Checked)
-                //{
-                //    a[0] = 0;
-                //    b[0] = 1;
-                //    d[0] = -1;
-                //    b[Kol] = 1 / h;
-                //    c[Kol] = -1 / h;
-                //    d[Kol] = -1;
-                //}
+                if (radioButton1.Checked)
+                {
+                    //первого рода слева=0 справа=0
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1;
+                    c[Kol] = 0;
+                    d[Kol] = 0;
+                }
+                else if (radioButton2.Checked)
+                {
+                    //первого рода слева=0 справа=1
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1;
+                    c[Kol] = 0;
+                    d[Kol] = -1;
+                }
+                else if (radioButton3.Checked)
+                {
+                    //первого рода слева=0 второго рода справа=0
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = 0;
+                }
+                else if (radioButton4.Checked)
+                {
+                    //первого рода слева=0 второго рода справа=1 
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = -1;
+                }
+                else if (radioButton5.Checked)
+                {
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = -1;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = -1;
+                }
+
+                f[0] = -a[0] / b[0];
+                g[0] = -d[0] / b[0];
 
                 while (t <= Tau)
                 {
                     ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
                     ObjWorkSheet.Cells[y + 3, 2] = t;
-                    for (n = 0; n <= Kol; n++)//считаем коэфициенты внутренних узлов
+                    for (n = 1; n <= Kol-1; n++)//считаем коэфициенты внутренних узлов
                     {
                         a[n] = -Diff / (h * h);
-                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n])) / (mju * h * h) + 1 / dt;
-                        c[n] = (k * (P[j, n + 1] - P[j, n])) / (mju * h * h) - Diff / (h * h);
-                        d[n] = -(1 / dt) - qv;
+                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) + 1 / dt;
+                        c[n] = (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) - Diff / (h * h);
+                        d[n] = -(Conc[j - 1, n] / dt) - qv;
                     }
 
-                    f[0] = -a[0] / b[0];
-                    g[0] = -d[0] / b[0];
 
                     for (n = 1; n <= Kol; n++)
                     {
                         f[n] = -a[n] / (b[n] + c[n] * f[n - 1]);
                         g[n] = -(d[n] + c[n] * g[n - 1]) / (b[n] + c[n] * f[n - 1]);
                     }
-                    P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
+                    Conc[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
                     for (n = Kol - 1; n >= 0; n--)//подсчёт температуры в текущий момент времени i во всех узлах
                     {
-                        P[j, n] = P[j, n + 1] * f[n] + g[n];
+                        Conc[j, n] = Conc[j, n + 1] * f[n] + g[n];
                     }
 
                     for (n = 0; n <= Kol; n++)
                     {
                         x = i * h;
-                        ObjWorkSheet.Cells[y + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
+                        ObjWorkSheet.Cells[y + 3, i + 3] = Conc[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
                         i++;
                     }
 

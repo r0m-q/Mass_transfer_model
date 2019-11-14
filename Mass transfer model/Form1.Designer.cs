@@ -57,12 +57,14 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // Output
@@ -79,27 +81,27 @@
             // 
             this.TextBoxTau.BackColor = System.Drawing.SystemColors.Window;
             this.TextBoxTau.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.TextBoxTau.Location = new System.Drawing.Point(102, 129);
+            this.TextBoxTau.Location = new System.Drawing.Point(11, 34);
             this.TextBoxTau.Name = "TextBoxTau";
-            this.TextBoxTau.Size = new System.Drawing.Size(145, 20);
+            this.TextBoxTau.Size = new System.Drawing.Size(150, 20);
             this.TextBoxTau.TabIndex = 1;
             this.TextBoxTau.Text = "0,2";
             this.TextBoxTau.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextBoxKol
             // 
-            this.TextBoxKol.Location = new System.Drawing.Point(102, 184);
+            this.TextBoxKol.Location = new System.Drawing.Point(11, 89);
             this.TextBoxKol.Name = "TextBoxKol";
-            this.TextBoxKol.Size = new System.Drawing.Size(145, 20);
+            this.TextBoxKol.Size = new System.Drawing.Size(150, 20);
             this.TextBoxKol.TabIndex = 2;
             this.TextBoxKol.Text = "6";
             this.TextBoxKol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextBoxPnach
             // 
-            this.TextBoxPnach.Location = new System.Drawing.Point(102, 241);
+            this.TextBoxPnach.Location = new System.Drawing.Point(11, 146);
             this.TextBoxPnach.Name = "TextBoxPnach";
-            this.TextBoxPnach.Size = new System.Drawing.Size(145, 20);
+            this.TextBoxPnach.Size = new System.Drawing.Size(150, 20);
             this.TextBoxPnach.TabIndex = 3;
             this.TextBoxPnach.Text = "0";
             this.TextBoxPnach.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -107,7 +109,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(113, 113);
+            this.label1.Location = new System.Drawing.Point(22, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 13);
             this.label1.TabIndex = 4;
@@ -117,7 +119,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(113, 168);
+            this.label2.Location = new System.Drawing.Point(22, 73);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(98, 13);
             this.label2.TabIndex = 5;
@@ -127,17 +129,17 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(111, 225);
+            this.label3.Location = new System.Drawing.Point(20, 130);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(130, 13);
+            this.label3.Size = new System.Drawing.Size(113, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Начальная температура";
+            this.label3.Text = "Начальное давление";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(389, 37);
+            this.label5.Location = new System.Drawing.Point(309, 25);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(158, 13);
             this.label5.TabIndex = 12;
@@ -146,7 +148,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(68, 37);
+            this.label6.Location = new System.Drawing.Point(27, 25);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(223, 13);
             this.label6.TabIndex = 13;
@@ -246,9 +248,9 @@
             // 
             // textBoxQv
             // 
-            this.textBoxQv.Location = new System.Drawing.Point(102, 297);
+            this.textBoxQv.Location = new System.Drawing.Point(11, 202);
             this.textBoxQv.Name = "textBoxQv";
-            this.textBoxQv.Size = new System.Drawing.Size(145, 20);
+            this.textBoxQv.Size = new System.Drawing.Size(150, 20);
             this.textBoxQv.TabIndex = 26;
             this.textBoxQv.Text = "0";
             this.textBoxQv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -256,7 +258,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(113, 281);
+            this.label4.Location = new System.Drawing.Point(22, 186);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(132, 13);
             this.label4.TabIndex = 27;
@@ -323,7 +325,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(371, 63);
+            this.label8.Location = new System.Drawing.Point(370, 64);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(14, 13);
             this.label8.TabIndex = 34;
@@ -344,15 +346,31 @@
             this.groupBox1.TabIndex = 35;
             this.groupBox1.TabStop = false;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.textBoxQv);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.TextBoxPnach);
+            this.groupBox2.Controls.Add(this.TextBoxKol);
+            this.groupBox2.Controls.Add(this.TextBoxTau);
+            this.groupBox2.Location = new System.Drawing.Point(30, 81);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(168, 243);
+            this.groupBox2.TabIndex = 36;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "groupBox2";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(669, 507);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBoxQv);
             this.Controls.Add(this.radioButton5);
             this.Controls.Add(this.radioButton4);
             this.Controls.Add(this.radioButton3);
@@ -365,12 +383,6 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.TextBoxPnach);
-            this.Controls.Add(this.TextBoxKol);
-            this.Controls.Add(this.TextBoxTau);
             this.Controls.Add(this.Output);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -382,6 +394,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -418,6 +432,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 
