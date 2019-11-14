@@ -85,59 +85,7 @@ namespace Mass_transfer_model
             double h = l / (Kol-1);//считаем шаг сетки
             int n;
             Kol = Kol - 1;
-
-            //граничые условия
-
-            if (radioButton1.Checked)
-            {
-                //первого рода слева=0 справа=0
-                a[0] = 0;
-                b[0] = 1;
-                d[0] = 0;
-                b[Kol] = 1;
-                c[Kol] = 0;
-                d[Kol] = 0;
-            }
-            else if (radioButton2.Checked)
-            {
-                //первого рода слева=0 справа=1
-                a[0] = 0;
-                b[0] = 1;
-                d[0] = 0;
-                b[Kol] = 1;
-                c[Kol] = 0;
-                d[Kol] = -1;
-            }
-            else if (radioButton3.Checked)
-            {
-                //первого рода слева=0 второго рода справа=0
-                a[0] = 0;
-                b[0] = 1;
-                d[0] = 0;
-                b[Kol] = 1 / h;
-                c[Kol] = -1 / h;
-                d[Kol] = 0;
-            }
-            else if (radioButton4.Checked)
-            {
-                //первого рода слева=0 второго рода справа=1 
-                a[0] = 0;
-                b[0] = 1;
-                d[0] = 0;
-                b[Kol] = 1 / h;
-                c[Kol] = -1 / h;
-                d[Kol] = -1;
-            }
-            else
-            {
-                a[0] = 0;
-                b[0] = 1;
-                d[0] = -1;
-                b[Kol] = 1 / h;
-                c[Kol] = -1 / h;
-                d[Kol] = -1;
-            }
-
+                        
             PressureCalculation();
 
             СoncentrationCalculation();
@@ -158,7 +106,59 @@ namespace Mass_transfer_model
                 ObjWorkSheet.Cells[3, 2] = t;
                 int i = 0;
                 t = t + dt;
-                                
+                
+                //граничые условия
+
+                if (radioButton6.Checked)
+                {
+                    //первого рода слева=0 справа=0
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = -1;
+                    b[Kol] = 1;
+                    c[Kol] = 0;
+                    d[Kol] = 0;
+                }
+                else if (radioButton7.Checked)
+                {
+                    //первого рода слева=0 справа=1
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1;
+                    c[Kol] = 0;
+                    d[Kol] = -1;
+                }
+                else if (radioButton8.Checked)
+                {
+                    //первого рода слева=0 второго рода справа=0
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = 0;
+                }
+                else if (radioButton9.Checked)
+                {
+                    //первого рода слева=0 второго рода справа=1 
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = 0;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = -1;
+                }
+                else if (radioButton10.Checked)
+                {
+                    a[0] = 0;
+                    b[0] = 1;
+                    d[0] = -1;
+                    b[Kol] = 1 / h;
+                    c[Kol] = -1 / h;
+                    d[Kol] = -1;
+                }
+
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
                 double alpha = 1, beta = 1; 
@@ -240,20 +240,72 @@ namespace Mass_transfer_model
                 int i = 0;
                 t = t + dt;
 
-                f[0] = -a[0] / b[0];
-                g[0] = -d[0] / b[0];
+                //граничые условия
+
+                //if (radioButton1.Checked)
+                //{
+                //    //первого рода слева=0 справа=0
+                //    a[0] = 0;
+                //    b[0] = 1;
+                //    d[0] = 0;
+                //    b[Kol] = 1;
+                //    c[Kol] = 0;
+                //    d[Kol] = 0;
+                //}
+                //else if (radioButton2.Checked)
+                //{
+                //    //первого рода слева=0 справа=1
+                //    a[0] = 0;
+                //    b[0] = 1;
+                //    d[0] = 0;
+                //    b[Kol] = 1;
+                //    c[Kol] = 0;
+                //    d[Kol] = -1;
+                //}
+                //else if (radioButton3.Checked)
+                //{
+                //    //первого рода слева=0 второго рода справа=0
+                //    a[0] = 0;
+                //    b[0] = 1;
+                //    d[0] = 0;
+                //    b[Kol] = 1 / h;
+                //    c[Kol] = -1 / h;
+                //    d[Kol] = 0;
+                //}
+                //else if (radioButton4.Checked)
+                //{
+                //    //первого рода слева=0 второго рода справа=1 
+                //    a[0] = 0;
+                //    b[0] = 1;
+                //    d[0] = 0;
+                //    b[Kol] = 1 / h;
+                //    c[Kol] = -1 / h;
+                //    d[Kol] = -1;
+                //}
+                //else if (radioButton5.Checked)
+                //{
+                //    a[0] = 0;
+                //    b[0] = 1;
+                //    d[0] = -1;
+                //    b[Kol] = 1 / h;
+                //    c[Kol] = -1 / h;
+                //    d[Kol] = -1;
+                //}
 
                 while (t <= Tau)
                 {
                     ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
                     ObjWorkSheet.Cells[y + 3, 2] = t;
-                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    for (n = 0; n <= Kol; n++)//считаем коэфициенты внутренних узлов
                     {
                         a[n] = -Diff / (h * h);
-                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) + 1 / dt;
-                        c[n] = (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) - Diff / (h * h);
+                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n])) / (mju * h * h) + 1 / dt;
+                        c[n] = (k * (P[j, n + 1] - P[j, n])) / (mju * h * h) - Diff / (h * h);
                         d[n] = -(1 / dt) - qv;
                     }
+
+                    f[0] = -a[0] / b[0];
+                    g[0] = -d[0] / b[0];
 
                     for (n = 1; n <= Kol; n++)
                     {
@@ -262,7 +314,7 @@ namespace Mass_transfer_model
                     }
                     P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
-                    for (n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
+                    for (n = Kol - 1; n >= 0; n--)//подсчёт температуры в текущий момент времени i во всех узлах
                     {
                         P[j, n] = P[j, n + 1] * f[n] + g[n];
                     }
