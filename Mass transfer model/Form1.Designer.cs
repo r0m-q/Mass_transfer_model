@@ -47,7 +47,7 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
-            this.textBoxQv = new System.Windows.Forms.TextBox();
+            this.textBoxConcIstochnik = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.radioButton7 = new System.Windows.Forms.RadioButton();
@@ -69,7 +69,7 @@
             // 
             // Output
             // 
-            this.Output.Location = new System.Drawing.Point(30, 431);
+            this.Output.Location = new System.Drawing.Point(30, 386);
             this.Output.Name = "Output";
             this.Output.Size = new System.Drawing.Size(594, 64);
             this.Output.TabIndex = 0;
@@ -211,10 +211,12 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
+            this.radioButton2.Checked = true;
             this.radioButton2.Location = new System.Drawing.Point(371, 138);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(14, 13);
             this.radioButton2.TabIndex = 22;
+            this.radioButton2.TabStop = true;
             this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // radioButton3
@@ -229,12 +231,10 @@
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
-            this.radioButton4.Checked = true;
             this.radioButton4.Location = new System.Drawing.Point(371, 255);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(14, 13);
             this.radioButton4.TabIndex = 24;
-            this.radioButton4.TabStop = true;
             this.radioButton4.UseVisualStyleBackColor = true;
             // 
             // radioButton5
@@ -246,43 +246,43 @@
             this.radioButton5.TabIndex = 25;
             this.radioButton5.UseVisualStyleBackColor = true;
             // 
-            // textBoxQv
+            // textBoxConcIstochnik
             // 
-            this.textBoxQv.Location = new System.Drawing.Point(11, 202);
-            this.textBoxQv.Name = "textBoxQv";
-            this.textBoxQv.Size = new System.Drawing.Size(150, 20);
-            this.textBoxQv.TabIndex = 26;
-            this.textBoxQv.Text = "0";
-            this.textBoxQv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxConcIstochnik.Location = new System.Drawing.Point(11, 202);
+            this.textBoxConcIstochnik.Name = "textBoxConcIstochnik";
+            this.textBoxConcIstochnik.Size = new System.Drawing.Size(150, 20);
+            this.textBoxConcIstochnik.TabIndex = 26;
+            this.textBoxConcIstochnik.Text = "0";
+            this.textBoxConcIstochnik.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(22, 186);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(132, 13);
+            this.label4.Size = new System.Drawing.Size(134, 13);
             this.label4.TabIndex = 27;
-            this.label4.Text = "Внутренний источник Qv";
+            this.label4.Text = "Концентрация источника";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // radioButton6
             // 
             this.radioButton6.AutoSize = true;
-            this.radioButton6.Checked = true;
             this.radioButton6.Location = new System.Drawing.Point(15, 30);
             this.radioButton6.Name = "radioButton6";
             this.radioButton6.Size = new System.Drawing.Size(14, 13);
             this.radioButton6.TabIndex = 28;
-            this.radioButton6.TabStop = true;
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
             // radioButton7
             // 
             this.radioButton7.AutoSize = true;
+            this.radioButton7.Checked = true;
             this.radioButton7.Location = new System.Drawing.Point(15, 76);
             this.radioButton7.Name = "radioButton7";
             this.radioButton7.Size = new System.Drawing.Size(14, 13);
             this.radioButton7.TabIndex = 29;
+            this.radioButton7.TabStop = true;
             this.radioButton7.UseVisualStyleBackColor = true;
             // 
             // radioButton8
@@ -349,7 +349,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.textBoxQv);
+            this.groupBox2.Controls.Add(this.textBoxConcIstochnik);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.label1);
@@ -361,13 +361,12 @@
             this.groupBox2.Size = new System.Drawing.Size(168, 243);
             this.groupBox2.TabIndex = 36;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(669, 507);
+            this.ClientSize = new System.Drawing.Size(669, 453);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label8);
@@ -422,7 +421,7 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton5;
-        private System.Windows.Forms.TextBox textBoxQv;
+        private System.Windows.Forms.TextBox textBoxConcIstochnik;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RadioButton radioButton6;
         private System.Windows.Forms.RadioButton radioButton7;

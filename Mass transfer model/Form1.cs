@@ -12,6 +12,7 @@ namespace Mass_transfer_model
         }
         public double[,] P = new double[1000, 1000];
         public double[,] Conc = new double[1000, 1000];
+        public double[,] qv = new double[1000, 1000];
         public double[] a = new double[1000];
         public double[] b = new double[1000];
         public double[] c = new double[1000];
@@ -32,7 +33,7 @@ namespace Mass_transfer_model
 
             int Kol;
             double Tau;
-            double qv;
+            double ConcIstochnik;
             double Pnach;
 
             try
@@ -67,7 +68,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                qv = Convert.ToDouble(textBoxQv.Text);//Внутренний источник
+                ConcIstochnik = Convert.ToDouble(textBoxConcIstochnik.Text);//Внутренний источник
             }
             catch (Exception ex)
             {
@@ -77,7 +78,7 @@ namespace Mass_transfer_model
             }
 
             int y = 0;
-            double k = 1, mju = 1, m = 1;
+            double k = 1, mju = 1, m = 1;//проницаемость, вязкость, пористость
             double dt = 0.04;//шаг по времени
             int j = 1;
             double Diff = 1;
@@ -87,7 +88,7 @@ namespace Mass_transfer_model
             double h = l / (Kol-1);//считаем шаг сетки
             int n;
             Kol = Kol - 1;
-                        
+
             PressureCalculation();
 
             СoncentrationCalculation();
@@ -108,7 +109,7 @@ namespace Mass_transfer_model
                 ObjWorkSheet.Cells[3, 2] = t;
                 int i = 0;
                 t = t + dt;
-                
+
                 //граничые условия
 
                 if (radioButton6.Checked)
@@ -116,7 +117,7 @@ namespace Mass_transfer_model
                     //первого рода слева=0 справа=0
                     a[0] = 0;
                     b[0] = 1;
-                    d[0] = -1;
+                    d[0] = 0;
                     b[Kol] = 1;
                     c[Kol] = 0;
                     d[Kol] = 0;
@@ -163,32 +164,26 @@ namespace Mass_transfer_model
 
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
-                double alpha = 1, beta = 1; 
-                //double[,] alpha = new double[1000,10000];
-                //double[,] beta = new double[1000, 10000];
+
+                double[,] alpha = new double[1000, 1000];
+                double[,] beta = new double[1000, 1000];
+
                 while (t <= Tau)
                 {
+                    //оформляем вывод
                     ObjWorkSheet.Cells[j + 3, 1] = "Time" + j;
                     ObjWorkSheet.Cells[j + 3, 2] = t;
-                    //for (y = 1; y <= Kol+1; y++)
-                    //{
-                    //    alpha[j,y-1] = 0.5 * (P[j, y] + P[j, y]);
-                    //    beta[j,y-1] = 0.5 * (P[j, y-1] + P[j, y]);
-                    //}
-
-                    //for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
-                    //{
-                    //    a[n] = -(k * alpha[j,i]) / (mju * h * h);
-                    //    b[n] = (k * alpha[j,i]) / (mju * h * h) + (k * beta[j, i]) / (mju * h * h) + m / dt;
-                    //    c[n] = -(k * beta[j, i]) / (mju * h * h);
-                    //    d[n] = -(m / dt) * P[j - 1, n];
-                    //}
+                    for (y = 1; y <= Kol - 1; y++) //считаем альфа и бета
+                    {
+                        alpha[j, y] = 0.5 * (P[j-1, y+1] + P[j-1, y]);
+                        beta[j, y] = 0.5 * (P[j-1, y] + P[j-1, y-1]);
+                    }
 
                     for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                     {
-                        a[n] = -(k * alpha) / (mju * h * h);
-                        b[n] = (k * alpha) / (mju * h * h) + (k * beta) / (mju * h * h) + m / dt;
-                        c[n] = -(k * beta) / (mju * h * h);
+                        a[n] = -(k * alpha[j, n]) / (mju * h * h); 
+                        b[n] = (k * alpha[j, n]) / (mju * h * h) + (k * beta[j, n]) / (mju * h * h) + m / dt;
+                        c[n] = -(k * beta[j, n]) / (mju * h * h);
                         d[n] = -(m / dt) * P[j - 1, n];
                     }
 
@@ -197,6 +192,7 @@ namespace Mass_transfer_model
                         f[n] = -a[n] / (b[n] + c[n] * f[n - 1]);
                         g[n] = -(d[n] + c[n] * g[n - 1]) / (b[n] + c[n] * f[n - 1]);
                     }
+
                     P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
                     for (n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
@@ -206,11 +202,8 @@ namespace Mass_transfer_model
 
                     for (n = 0; n <= Kol; n++)
                     {
-                        x = i * h;
                         ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
                         i++;
-
-                        //if (x > 1) { break; }
                     }
 
                     i = 0;
@@ -293,7 +286,7 @@ namespace Mass_transfer_model
                     c[Kol] = -1 / h;
                     d[Kol] = -1;
                 }
-
+                
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
 
@@ -301,14 +294,19 @@ namespace Mass_transfer_model
                 {
                     ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
                     ObjWorkSheet.Cells[y + 3, 2] = t;
-                    for (n = 1; n <= Kol-1; n++)//считаем коэфициенты внутренних узлов
+
+                    //считаем внутренний источник
+                    for (n = 0; n <= Kol; n++)
+                    {
+                        qv[j, n] = h * (ConcIstochnik - Conc[j, n]);
+                    }
+                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                     {
                         a[n] = -Diff / (h * h);
                         b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) + 1 / dt;
                         c[n] = (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) - Diff / (h * h);
-                        d[n] = -(Conc[j - 1, n] / dt) - qv;
+                        d[n] = -(Conc[j - 1, n]) / dt - qv[j, n];
                     }
-
 
                     for (n = 1; n <= Kol; n++)
                     {
