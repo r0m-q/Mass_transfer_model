@@ -33,8 +33,9 @@ namespace Mass_transfer_model
 
             int Kol;
             double Tau;
-            double ConcIstochnik;
-            double Pnach;
+            double ConcNach;
+            double Pnach = 1;
+            double dt;
 
             try
             {
@@ -58,7 +59,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                Pnach = Convert.ToDouble(TextBoxPnach.Text);//начальная температура
+                ConcNach = Convert.ToDouble(TextBoxConcNach.Text);//начальное давление
             }
             catch (Exception ex)
             {
@@ -68,7 +69,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                ConcIstochnik = Convert.ToDouble(textBoxConcIstochnik.Text);//Внутренний источник
+                dt = Convert.ToDouble(textBoxdt.Text);//шаг по времени
             }
             catch (Exception ex)
             {
@@ -76,17 +77,23 @@ namespace Mass_transfer_model
                 MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
-
+            try
+            {
+                qv[1,1] = Convert.ToDouble(textBoxqv.Text); //шаг по времени
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("неверный формат ввода");
+                MessageBox.Show($"Исключение:{ex.Message}");
+                return;
+            }
             int y = 0;
-            double k = 1, mju = 1, m = 1;//проницаемость, вязкость, пористость
-            double dt = 0.04;//шаг по времени
             int j = 1;
-            double Diff = 1;
-            double ConcNach = 0;
             double t = 0;
-            double l = 1.0;//принимаем длинну за 1
-            double h = l / (Kol-1);//считаем шаг сетки
+            double l = 1.0;//безрозмерная длинна
+            double h = l / (Kol - 1); //считаем шаг сетки
             int n;
+
             Kol = Kol - 1;
 
             PressureCalculation();
@@ -124,13 +131,13 @@ namespace Mass_transfer_model
                 }
                 else if (radioButton7.Checked)
                 {
-                    //первого рода слева=0 справа=1
+                    //первого рода слева=1 справа=0
                     a[0] = 0;
                     b[0] = 1;
-                    d[0] = 0;
+                    d[0] = -1;
                     b[Kol] = 1;
                     c[Kol] = 0;
-                    d[Kol] = -1;
+                    d[Kol] = 0;
                 }
                 else if (radioButton8.Checked)
                 {
@@ -295,17 +302,12 @@ namespace Mass_transfer_model
                     ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
                     ObjWorkSheet.Cells[y + 3, 2] = t;
 
-                    //считаем внутренний источник
-                    for (n = 0; n <= Kol; n++)
-                    {
-                        qv[j, n] = h * (ConcIstochnik - Conc[j, n]);
-                    }
                     for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                     {
-                        a[n] = -Diff / (h * h);
-                        b[n] = 2 * Diff / (h * h) - (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) + 1 / dt;
-                        c[n] = (k * (P[j, n + 1] - P[j, n - 1])) / (2 * mju * h * h) - Diff / (h * h);
-                        d[n] = -(Conc[j - 1, n]) / dt - qv[j, n];
+                        a[n] = -1 / (h * h);
+                        b[n] = 2 / (h * h) - (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) + 1 / dt;
+                        c[n] = (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) - 1 / (h * h);
+                        d[n] = -Conc[j - 1, n] / dt - qv[1,1];
                     }
 
                     for (n = 1; n <= Kol; n++)
