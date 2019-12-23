@@ -35,7 +35,9 @@ namespace Mass_transfer_model
             double Tau;
             double ConcNach;
             double Pnach = 1;
-            double dt;
+            double m;
+            double Pleft = 1;
+            double Pright;
 
             try
             {
@@ -69,7 +71,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                dt = Convert.ToDouble(textBoxdt.Text);//шаг по времени
+                m = Convert.ToDouble(textBoxM.Text);//шаг по времени
             }
             catch (Exception ex)
             {
@@ -87,8 +89,19 @@ namespace Mass_transfer_model
                 MessageBox.Show($"Исключение:{ex.Message}");
                 return;
             }
+            try
+            {
+                Pright = Convert.ToDouble(textBoxP.Text)+1; //шаг по времени
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("неверный формат ввода");
+                MessageBox.Show($"Исключение:{ex.Message}");
+                return;
+            }
             int y = 0;
             int j = 1;
+            double dt = 0.04;
             double t = 0;
             double l = 1.0;//безрозмерная длинна
             double h = l / (Kol - 1); //считаем шаг сетки
@@ -118,57 +131,14 @@ namespace Mass_transfer_model
                 t = t + dt;
 
                 //граничые условия
-
-                if (radioButton6.Checked)
-                {
-                    //первого рода слева=0 справа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = 0;
-                }
-                else if (radioButton7.Checked)
-                {
-                    //первого рода слева=1 справа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = -1;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = 0;
-                }
-                else if (radioButton8.Checked)
-                {
-                    //первого рода слева=0 второго рода справа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = 0;
-                }
-                else if (radioButton9.Checked)
-                {
-                    //первого рода слева=0 второго рода справа=1 
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
-                }
-                else if (radioButton10.Checked)
-                {
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = -1;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
-                }
-
+                
+                a[0] = 0;
+                b[0] = 1;
+                d[0] = -Pleft;
+                b[Kol] = 1;
+                c[Kol] = 0;
+                d[Kol] = -Pright;
+                
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
 
@@ -188,9 +158,9 @@ namespace Mass_transfer_model
 
                     for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
                     {
-                        a[n] = -(k * alpha[j, n]) / (mju * h * h); 
-                        b[n] = (k * alpha[j, n]) / (mju * h * h) + (k * beta[j, n]) / (mju * h * h) + m / dt;
-                        c[n] = -(k * beta[j, n]) / (mju * h * h);
+                        a[n] = -alpha[j, n] / (h * h); 
+                        b[n] = alpha[j, n] / (h * h) + beta[j, n] / (h * h) + m / dt;
+                        c[n] = -beta[j, n] / (h * h);
                         d[n] = -(m / dt) * P[j - 1, n];
                     }
 
@@ -341,6 +311,21 @@ namespace Mass_transfer_model
         }
 
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxdt_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }
