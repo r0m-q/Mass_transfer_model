@@ -298,9 +298,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(22, 297);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(102, 13);
+            this.label7.Size = new System.Drawing.Size(170, 13);
             this.label7.TabIndex = 32;
-            this.label7.Text = "Перепад давления";
+            this.label7.Text = "Перепад тиску між скважинами";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox2

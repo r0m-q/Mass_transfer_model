@@ -38,10 +38,11 @@ namespace Mass_transfer_model
             double m;
             double Pleft = 1;
             double Pright;
+            double ConcIstochnik;
 
             try
             {
-                Tau = Convert.ToDouble(TextBoxTau.Text);//время
+                Tau = Convert.ToDouble(TextBoxTau.Text);//час
             }
             catch (Exception ex)
             {
@@ -51,7 +52,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                Kol = Convert.ToInt32(TextBoxKol.Text);//кол-во узлов
+                Kol = Convert.ToInt32(TextBoxKol.Text);//кількість вузлів сітки
             }
             catch (Exception ex)
             {
@@ -61,7 +62,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                ConcNach = Convert.ToDouble(TextBoxConcNach.Text);//начальное давление
+                ConcNach = Convert.ToDouble(TextBoxConcNach.Text);//почпткова концентрація
             }
             catch (Exception ex)
             {
@@ -71,7 +72,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                m = Convert.ToDouble(textBoxM.Text);//шаг по времени
+                m = Convert.ToDouble(textBoxM.Text);//пористість середовища
             }
             catch (Exception ex)
             {
@@ -81,7 +82,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                qv[1,1] = Convert.ToDouble(textBoxqv.Text); //шаг по времени
+                ConcIstochnik = Convert.ToDouble(textBoxqv.Text); //конецентрація речовини в пористому середовищі
             }
             catch (Exception ex)
             {
@@ -91,7 +92,7 @@ namespace Mass_transfer_model
             }
             try
             {
-                Pright = Convert.ToDouble(textBoxP.Text)+1; //шаг по времени
+                Pright = Convert.ToDouble(textBoxP.Text)+1; //тиск на видавальній скважині
             }
             catch (Exception ex)
             {
@@ -103,15 +104,15 @@ namespace Mass_transfer_model
             int j = 1;
             double dt = 0.04;
             double t = 0;
-            double l = 1.0;//безрозмерная длинна
-            double h = l / (Kol - 1); //считаем шаг сетки
+            double l = 1.0;
+            double h = l / (Kol - 1); 
             int n;
 
             Kol = Kol - 1;
 
-            PressureCalculation();
+            PressureCalculation();//рахуємо тиск
 
-            СoncentrationCalculation();
+            СoncentrationCalculation();//рахуємо концентрацію
 
             void PressureCalculation()
             {
@@ -121,16 +122,17 @@ namespace Mass_transfer_model
                 for (n = 0; n <= Kol; n++)
                 {
                     x = n * h;
-                    ObjWorkSheet.Cells[2, n + 3] = "X" + (n + 1) + "   =   " + x;
+                    ObjWorkSheet.Cells[2, n + 3] = "X" + (n + 1);
+                    ObjWorkSheet.Cells[3, n + 3] = x;
                     P[0, n] = Pnach;
-                    ObjWorkSheet.Cells[3, n + 3] = P[0, n];//выводим начальную температуру во всех узлах
+                    ObjWorkSheet.Cells[3, n + 3] = P[0, n];//виводимо початковий тиск в усіх узлах
                 }
-                ObjWorkSheet.Cells[3, 1] = "Time" + (0);//оформляем вывод
+                ObjWorkSheet.Cells[3, 1] = "Time" + (0);
                 ObjWorkSheet.Cells[3, 2] = t;
                 int i = 0;
                 t = t + dt;
 
-                //граничые условия
+                //граничні умови
                 
                 a[0] = 0;
                 b[0] = 1;
@@ -147,16 +149,15 @@ namespace Mass_transfer_model
 
                 while (t <= Tau)
                 {
-                    //оформляем вывод
                     ObjWorkSheet.Cells[j + 3, 1] = "Time" + j;
                     ObjWorkSheet.Cells[j + 3, 2] = t;
-                    for (y = 1; y <= Kol - 1; y++) //считаем альфа и бета
+                    for (y = 1; y <= Kol - 1; y++)
                     {
                         alpha[j, y] = 0.5 * (P[j-1, y+1] + P[j-1, y]);
                         beta[j, y] = 0.5 * (P[j-1, y] + P[j-1, y-1]);
                     }
 
-                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    for (n = 1; n <= Kol - 1; n++)//коефіцієнти внутрішніх вузлів
                     {
                         a[n] = -alpha[j, n] / (h * h); 
                         b[n] = alpha[j, n] / (h * h) + beta[j, n] / (h * h) + m / dt;
@@ -172,21 +173,20 @@ namespace Mass_transfer_model
 
                     P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
-                    for (n = Kol - 1; n >= 0; n = n - 1)//подсчёт температуры в текущий момент времени i во всех узлах
+                    for (n = Kol - 1; n >= 0; n = n - 1)//підрахунок тиску в данний момент часу в усіх вузлах
                     {
                         P[j, n] = P[j, n + 1] * f[n] + g[n];
                     }
 
                     for (n = 0; n <= Kol; n++)
                     {
-                        ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
+                        ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вивід значень в таблицю Exel
                         i++;
                     }
 
                     i = 0;
                     t = t + dt;
                     j++;
-                    //Вызываем эксель.
                     ObjExcel.Visible = true;
                     ObjExcel.UserControl = true;
                 }
@@ -199,24 +199,26 @@ namespace Mass_transfer_model
                 j = 1;
                 double x = 0;
                 y = y + 4;
+                //MessageBox.Show(Convert.ToString(y));
                 ObjWorkSheet.Cells[y, 1] = "C";
                 for (n = 0; n <= Kol; n++)
                 {
                     x = n * h;
-                    ObjWorkSheet.Cells[y + 1, n + 3] = "X" + (n + 1) + "  =  " + x;
-                    Conc[y, n] = ConcNach;
-                    ObjWorkSheet.Cells[y + 2, n + 3] = Conc[y , n];//выводим начальную температуру во всех узлах
+                    ObjWorkSheet.Cells[y, n + 3] = "X" + (n + 1);
+                    ObjWorkSheet.Cells[y + 1, n + 3] = x;
+                    Conc[y-29, n] = ConcNach;
+                    ObjWorkSheet.Cells[y + 2, n + 3] = Conc[y-29 , n];//виводимо початкову концентрацію в усіх узлах
                 }
-                ObjWorkSheet.Cells[y + 2, 1] = "Time" + (0);//оформляем вывод
+                ObjWorkSheet.Cells[y + 2, 1] = "Time" + (0);
                 ObjWorkSheet.Cells[y + 2, 2] = t;
                 int i = 0;
                 t = t + dt;
 
-                //граничые условия
+                //граничні умови
 
                 if (radioButton1.Checked)
                 {
-                    //первого рода слева=0 справа=0
+                    //першого роду зліва=0, зправа=0
                     a[0] = 0;
                     b[0] = 1;
                     d[0] = 0;
@@ -226,7 +228,7 @@ namespace Mass_transfer_model
                 }
                 else if (radioButton2.Checked)
                 {
-                    //первого рода слева=0 справа=1
+                    //першого роду зліва=0, зправа=1
                     a[0] = 0;
                     b[0] = 1;
                     d[0] = 0;
@@ -236,7 +238,7 @@ namespace Mass_transfer_model
                 }
                 else if (radioButton3.Checked)
                 {
-                    //первого рода слева=0 второго рода справа=0
+                    //першого роду зліва=0 другого роду зправа=0
                     a[0] = 0;
                     b[0] = 1;
                     d[0] = 0;
@@ -246,7 +248,7 @@ namespace Mass_transfer_model
                 }
                 else if (radioButton4.Checked)
                 {
-                    //первого рода слева=0 второго рода справа=1 
+                    //першого роду зліва=0 другого роду зправа=1 
                     a[0] = 0;
                     b[0] = 1;
                     d[0] = 0;
@@ -256,6 +258,7 @@ namespace Mass_transfer_model
                 }
                 else if (radioButton5.Checked)
                 {
+                    //першого роду зліва=1 другого роду зправа=1 
                     a[0] = 0;
                     b[0] = 1;
                     d[0] = -1;
@@ -271,13 +274,16 @@ namespace Mass_transfer_model
                 {
                     ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
                     ObjWorkSheet.Cells[y + 3, 2] = t;
-
-                    for (n = 1; n <= Kol - 1; n++)//считаем коэфициенты внутренних узлов
+                    for (n = 0; n <= Kol; n++)
+                    {
+                        qv[j, n] = h * (ConcIstochnik - Conc[j - 1, n]);
+                    }
+                    for (n = 1; n <= Kol - 1; n++)//рахуемо коуфицієнти
                     {
                         a[n] = -1 / (h * h);
                         b[n] = 2 / (h * h) - (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) + 1 / dt;
                         c[n] = (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) - 1 / (h * h);
-                        d[n] = -Conc[j - 1, n] / dt - qv[1,1];
+                        d[n] = -Conc[j - 1, n] / dt - qv[j, n];
                     }
 
                     for (n = 1; n <= Kol; n++)
@@ -287,7 +293,7 @@ namespace Mass_transfer_model
                     }
                     Conc[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
-                    for (n = Kol - 1; n >= 0; n--)//подсчёт температуры в текущий момент времени i во всех узлах
+                    for (n = Kol - 1; n >= 0; n--)//підрахунок концентрації
                     {
                         Conc[j, n] = Conc[j, n + 1] * f[n] + g[n];
                     }
@@ -295,7 +301,7 @@ namespace Mass_transfer_model
                     for (n = 0; n <= Kol; n++)
                     {
                         x = i * h;
-                        ObjWorkSheet.Cells[y + 3, i + 3] = Conc[j, n];//вывод значений в таблицу exel в текуший момент времени і во всех узлах
+                        ObjWorkSheet.Cells[y + 3, i + 3] = Conc[j, n];//вивід значень в таблицю Exel
                         i++;
                     }
 
@@ -303,7 +309,7 @@ namespace Mass_transfer_model
                     t = t + dt;
                     y++;
                     j++;
-                    //Вызываем эксель.
+
                     ObjExcel.Visible = true;
                     ObjExcel.UserControl = true;
                 }
