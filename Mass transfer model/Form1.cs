@@ -101,39 +101,35 @@ namespace Mass_transfer_model
                 return;
             }
             int y = 0;
-            int j = 1;
-            double dt = 0.04;
+            int j = 1;//часова координата
+            double x = 0;//просторова координата
+            double dt = Tau / 20;
             double t = 0;
-            double l = 1.0;
-            double h = l / (Kol - 1); 
+            double l = 1.0;//????????????????
+            Kol = Kol - 1;//з урахуванням що нумерація масиву починається з 0 
+            double dx = l / Kol; 
             int n;
-
-            Kol = Kol - 1;
-
+            
             PressureCalculation();//рахуємо тиск
 
             СoncentrationCalculation();//рахуємо концентрацію
 
             void PressureCalculation()
             {
-                double x = 0;
                 j = 1;
                 ObjWorkSheet.Cells[j, 1] = "P";
-                for (n = 0; n <= Kol; n++)
-                {
-                    x = n * h;
-                    ObjWorkSheet.Cells[2, n + 3] = "X" + (n + 1);
-                    ObjWorkSheet.Cells[3, n + 3] = x;
-                    P[0, n] = Pnach;
-                    ObjWorkSheet.Cells[3, n + 3] = P[0, n];//виводимо початковий тиск в усіх узлах
-                }
                 ObjWorkSheet.Cells[3, 1] = "Time" + (0);
                 ObjWorkSheet.Cells[3, 2] = t;
-                int i = 0;
                 t = t + dt;
+                for (n = 0; n <= Kol; n++)
+                {
+                    x = n * dx;
+                    ObjWorkSheet.Cells[2, n + 3] = "X" + (n + 1);
+                    ObjWorkSheet.Cells[3, n + 3] = x;
+                    ObjWorkSheet.Cells[3, n + 3] = P[0, n] = Pnach;//виводимо початковий тиск в усіх узлах
+                }
 
                 //граничні умови
-                
                 a[0] = 0;
                 b[0] = 1;
                 d[0] = -Pleft;
@@ -147,21 +143,22 @@ namespace Mass_transfer_model
                 double[,] alpha = new double[1000, 1000];
                 double[,] beta = new double[1000, 1000];
 
-                while (t <= Tau)
+                while (t <= Tau + dt)
                 {
                     ObjWorkSheet.Cells[j + 3, 1] = "Time" + j;
                     ObjWorkSheet.Cells[j + 3, 2] = t;
+                    //MessageBox.Show(Convert.ToString(j));
                     for (y = 1; y <= Kol - 1; y++)
                     {
-                        alpha[j, y] = 0.5 * (P[j-1, y+1] + P[j-1, y]);
-                        beta[j, y] = 0.5 * (P[j-1, y] + P[j-1, y-1]);
+                        alpha[j, y] = 0.5 * (P[j - 1, y + 1] + P[j - 1, y]);
+                        beta[j, y] = 0.5 * (P[j - 1, y] + P[j - 1, y - 1]);
                     }
 
                     for (n = 1; n <= Kol - 1; n++)//коефіцієнти внутрішніх вузлів
                     {
-                        a[n] = -alpha[j, n] / (h * h); 
-                        b[n] = alpha[j, n] / (h * h) + beta[j, n] / (h * h) + m / dt;
-                        c[n] = -beta[j, n] / (h * h);
+                        a[n] = -alpha[j, n] / (dx * dx); 
+                        b[n] = alpha[j, n] / (dx * dx) + beta[j, n] / (dx * dx) + m / dt;
+                        c[n] = -beta[j, n] / (dx * dx);
                         d[n] = -(m / dt) * P[j - 1, n];
                     }
 
@@ -173,117 +170,115 @@ namespace Mass_transfer_model
 
                     P[j, Kol] = -(d[Kol] + c[Kol] * g[Kol - 1]) / (b[Kol] + c[Kol] * f[Kol - 1]);
 
-                    for (n = Kol - 1; n >= 0; n = n - 1)//підрахунок тиску в данний момент часу в усіх вузлах
+                    for (n = Kol - 1; n >= 0; n-- )//підрахунок тиску в данний момент часу в усіх вузлах
                     {
                         P[j, n] = P[j, n + 1] * f[n] + g[n];
                     }
 
                     for (n = 0; n <= Kol; n++)
                     {
-                        ObjWorkSheet.Cells[j + 3, i + 3] = P[j, n];//вивід значень в таблицю Exel
-                        i++;
+                        ObjWorkSheet.Cells[j + 3, n + 3] = P[j, n];//запис значень до таблиці Exel
                     }
-
-                    i = 0;
+                    
                     t = t + dt;
                     j++;
                     ObjExcel.Visible = true;
                     ObjExcel.UserControl = true;
                 }
                 y = j;
+
+                ObjWorkSheet.Cells[24, 6] = "y";
+                ObjWorkSheet.Cells[24, 7] = y;//21
             }
 
             void СoncentrationCalculation()
             {
                 t = 0;
                 j = 1;
-                double x = 0;
-                y = y + 4;
-                //MessageBox.Show(Convert.ToString(y));
+                y = y + 4;//25
                 ObjWorkSheet.Cells[y, 1] = "C";
-                for (n = 0; n <= Kol; n++)
-                {
-                    x = n * h;
-                    ObjWorkSheet.Cells[y, n + 3] = "X" + (n + 1);
-                    ObjWorkSheet.Cells[y + 1, n + 3] = x;
-                    Conc[y-29, n] = ConcNach;
-                    ObjWorkSheet.Cells[y + 2, n + 3] = Conc[y-29 , n];//виводимо початкову концентрацію в усіх узлах
-                }
                 ObjWorkSheet.Cells[y + 2, 1] = "Time" + (0);
                 ObjWorkSheet.Cells[y + 2, 2] = t;
-                int i = 0;
                 t = t + dt;
+                for (n = 0; n <= Kol; n++)
+                {
+                    x = n * dx;
+                    ObjWorkSheet.Cells[y, n + 3] = "X" + (n + 1);
+                    ObjWorkSheet.Cells[y + 1, n + 3] = x;
+                    ObjWorkSheet.Cells[y + 2, n + 3] = Conc[0, n] = ConcNach;//виводимо початкову концентрацію в усіх узлах
+                }
 
                 //граничні умови
-
-                if (radioButton1.Checked)
                 {
-                    //першого роду зліва=0, зправа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = 0;
-                }
-                else if (radioButton2.Checked)
-                {
-                    //першого роду зліва=0, зправа=1
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1;
-                    c[Kol] = 0;
-                    d[Kol] = -1;
-                }
-                else if (radioButton3.Checked)
-                {
-                    //першого роду зліва=0 другого роду зправа=0
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = 0;
-                }
-                else if (radioButton4.Checked)
-                {
-                    //першого роду зліва=0 другого роду зправа=1 
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = 0;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
-                }
-                else if (radioButton5.Checked)
-                {
-                    //першого роду зліва=1 другого роду зправа=1 
-                    a[0] = 0;
-                    b[0] = 1;
-                    d[0] = -1;
-                    b[Kol] = 1 / h;
-                    c[Kol] = -1 / h;
-                    d[Kol] = -1;
+                    if (radioButton1.Checked)
+                    {
+                        //першого роду зліва=0, зправа=0
+                        a[0] = 0;
+                        b[0] = 1;
+                        d[0] = 0;
+                        b[Kol] = 1;
+                        c[Kol] = 0;
+                        d[Kol] = 0;
+                    }
+                    else if (radioButton2.Checked)
+                    {
+                        //першого роду зліва=0, зправа=1
+                        a[0] = 0;
+                        b[0] = 1;
+                        d[0] = 0;
+                        b[Kol] = 1;
+                        c[Kol] = 0;
+                        d[Kol] = -1;
+                    }
+                    else if (radioButton3.Checked)
+                    {
+                        //першого роду зліва=0 другого роду зправа=0
+                        a[0] = 0;
+                        b[0] = 1;
+                        d[0] = 0;
+                        b[Kol] = 1;
+                        c[Kol] = -1;
+                        d[Kol] = 0;
+                    }
+                    else if (radioButton4.Checked)
+                    {
+                        //першого роду зліва=0 другого роду зправа=1 
+                        a[0] = 0;
+                        b[0] = 1;
+                        d[0] = 0;
+                        b[Kol] = 1 / dx;
+                        c[Kol] = -1 / dx;
+                        d[Kol] = -1;
+                    }
+                    else if (radioButton5.Checked)
+                    {
+                        //першого роду зліва=1 другого роду зправа=1 
+                        a[0] = 0;
+                        b[0] = 1;
+                        d[0] = -1;
+                        b[Kol] = 1 / dx;
+                        c[Kol] = -1 / dx;
+                        d[Kol] = -1;
+                    }
                 }
                 
                 f[0] = -a[0] / b[0];
                 g[0] = -d[0] / b[0];
 
-                while (t <= Tau)
+                while (t <= Tau + dt)
                 {
-                    ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
-                    ObjWorkSheet.Cells[y + 3, 2] = t;
                     for (n = 0; n <= Kol; n++)
                     {
-                        qv[j, n] = h * (ConcIstochnik - Conc[j - 1, n]);
+                        qv[j, n] = dx * (ConcIstochnik - Conc[j - 1, n]);
+                       
                     }
+                        int asd = j;
                     for (n = 1; n <= Kol - 1; n++)//рахуемо коуфицієнти
                     {
-                        a[n] = -1 / (h * h);
-                        b[n] = 2 / (h * h) - (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) + 1 / dt;
-                        c[n] = (P[j, n + 1] - P[j, n - 1]) / (2 * h * h) - 1 / (h * h);
-                        d[n] = -Conc[j - 1, n] / dt - qv[j, n];
+                        a[n] = -1 / (dx * dx);
+                        b[n] = 2 / (dx * dx) + (P[j, n + 1] - P[j, n - 1]) / (2 * dx * dx) + 1 / dt;
+                        c[n] = (-(P[j, n + 1] - P[j, n - 1])) / (2 * dx * dx) + 1 / (dx * dx);
+                        d[n] = -Conc[j - 1, n] / dt - 0;// qv[j, n];
                     }
 
                     for (n = 1; n <= Kol; n++)
@@ -298,14 +293,19 @@ namespace Mass_transfer_model
                         Conc[j, n] = Conc[j, n + 1] * f[n] + g[n];
                     }
 
+                    ObjWorkSheet.Cells[y + 3, n + 14] = dt;
+                    ObjWorkSheet.Cells[y + 3, n + 15] = t;
+                    ObjWorkSheet.Cells[y + 3, n + 16] = j;
+                    ObjWorkSheet.Cells[y + 3, n + 17] = n;
+                    ObjWorkSheet.Cells[y + 3, n + 18] = Kol;
+                    ObjWorkSheet.Cells[y + 3, 1] = "Time" + (j);
+                    ObjWorkSheet.Cells[y + 3, 2] = t;
                     for (n = 0; n <= Kol; n++)
                     {
-                        x = i * h;
-                        ObjWorkSheet.Cells[y + 3, i + 3] = Conc[j, n];//вивід значень в таблицю Exel
-                        i++;
+                        x = n * dx;
+                        ObjWorkSheet.Cells[y + 3, n + 3] = Conc[j, n];//вивід значень в таблицю Exel
                     }
 
-                    i = 0;
                     t = t + dt;
                     y++;
                     j++;
